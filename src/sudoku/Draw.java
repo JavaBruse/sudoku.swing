@@ -2,6 +2,7 @@ package sudoku;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 
 public class Draw extends JPanel {
     private final int paneLights = 594;
@@ -10,12 +11,17 @@ public class Draw extends JPanel {
     private final int stepCell = cell / 6;
     private int[] arrXY = new int[10];
 
+    public Draw( ) {
+
+    }
+
 
     protected void paintComponent(Graphics g) {
+        fillCell = Controller.fillCell;
         if (fillCell == true) {
             setFillCell(g);
         }
-        this.remove(this);
+        //this.remove(this);
         setLineCell(g, Color.BLACK);
         setAllNumber(g, Core.sudokuArr);
         Core.synchrArr(Core.arrUserNumber, Core.sudokuArr);
@@ -48,7 +54,10 @@ public class Draw extends JPanel {
     }
 
     public void paneFillCell(Graphics g, int horiz, int vert, int hight, int width) {
-        g.drawRect(horiz, vert, hight, width);
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setPaint(Color.getHSBColor(47f,34f,61f));
+        Rectangle2D r2D = new Rectangle2D.Float(horiz, vert, hight, width);
+        g2.fill(r2D);
     }
 
     private void setAllNumber(Graphics g, int arr[][]) {

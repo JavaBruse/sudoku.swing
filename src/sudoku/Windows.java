@@ -25,6 +25,7 @@ public class Windows extends JFrame {
     }
 
     public Windows() {
+
         try {
             render();
         } catch (HeadlessException e) {
@@ -37,7 +38,7 @@ public class Windows extends JFrame {
         addComponent();
     }
 
-    private void addComponent() {
+    private void addComponent( ) {
         panel.add(button);
         panel.add(radioButton);
         panel.add(comboBox);
@@ -77,7 +78,7 @@ public class Windows extends JFrame {
         panel = new JPanel(new GridLayout(1,3));
     }
 
-    private JPanel map() {
+    private JPanel map( ) {
         Draw draw = new Draw();
         return draw;
     }

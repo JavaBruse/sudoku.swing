@@ -19,7 +19,8 @@ public class Controller {
     private final int cell = paneLights / 9;
     private final int stepX = 10;
     private final int stepY = 55;//47
-    private boolean fillCell = false;
+
+    public static boolean fillCell = false;
     private final int stepCell = cell / 6;
     private int[] arrXY = new int[10];
     private int x, y;

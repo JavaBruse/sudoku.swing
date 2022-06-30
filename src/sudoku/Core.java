@@ -3,8 +3,10 @@ package sudoku;
 import java.util.HashSet;
 import java.util.Set;
 
-public class coreSudoku {
-    public static boolean gameStart = false;
+public class Core {
+
+
+    public static boolean startGame = false;
     private static final int arrLength = 9;
     public static int level = 1;
     public static int[][] winnerArr = new int[arrLength][arrLength];
@@ -23,12 +25,12 @@ public class coreSudoku {
 
 
     public static void startGame() {
-        if (gameStart == false) {
+        if (startGame == false) {
             setArrZero(arrUserNumber);
             sudokuArr = copyArr(sudokuArr, sudokuArrDef);
             mixingRandom(1000);
             hideNumber(levelHide());
-            gameStart = true;
+            startGame = true;
         }
     }
 

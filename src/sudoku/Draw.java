@@ -55,7 +55,7 @@ public class Draw extends JPanel {
 
     public void paneFillCell(Graphics g, int horiz, int vert, int hight, int width) {
         Graphics2D g2 = (Graphics2D) g;
-        g2.setPaint(Color.getHSBColor(47f,34f,61f));
+        g2.setPaint(Color.MAGENTA);
         Rectangle2D r2D = new Rectangle2D.Float(horiz, vert, hight, width);
         g2.fill(r2D);
     }

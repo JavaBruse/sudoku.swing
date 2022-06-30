@@ -62,6 +62,7 @@ public class Controller {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Core.level = comboBox.getSelectedIndex() + 1;
+                buttonUpdate();
             }
         });
         frame.addMouseListener(new MouseListener() {

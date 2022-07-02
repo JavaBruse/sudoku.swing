@@ -2,18 +2,17 @@ package sudoku;
 
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import javax.swing.event.MouseInputListener;
+import java.awt.event.*;
 
 public class Controller {
 
-    private Windows windows = new Windows();
+    private Windows windows;
     private JFrame frame;
     private JComboBox comboBox;
     private JRadioButton radioButton;
     private JButton button;
+    private JButton buttonColor;
 
     private final int paneLights = 594;
     private final int cell = paneLights / 9;
@@ -21,12 +20,13 @@ public class Controller {
     private final int stepY = 55;//47
 
     public static boolean fillCell = false;
+    public static boolean winner = false;
     private final int stepCell = cell / 6;
     private int[] arrXY = new int[10];
     private int x, y;
 
     public void start() {
-        Core.startGame();
+        windows = new Windows();
         initJComponent();
         listeners();
         frame.setVisible(true);
@@ -37,46 +37,53 @@ public class Controller {
         comboBox = windows.getComboBox();
         radioButton = windows.getRadioButton();
         button = windows.getButton();
+        buttonColor = windows.getButtonColor();
     }
 
     private void listeners() {
-        button.addActionListener(new ActionListener() {
+        buttonColor.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Draw.color = Core.randomColor();
+                renderJPanel();
+            }
+        });
+
+        button.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                winner = false;
                 buttonUpdate();
             }
         });
-        radioButton.addActionListener(new ActionListener() {
+        radioButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (fillCell == false) {
+                if (radioButton.isSelected()) {
                     fillCell = true;
                 } else {
                     fillCell = false;
-
                 }
-                windows.render();
+                renderJPanel();
+
             }
         });
-        comboBox.addActionListener(new ActionListener() {
+        comboBox.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Core.level = comboBox.getSelectedIndex() + 1;
-                buttonUpdate();
             }
         });
-        frame.addMouseListener(new MouseListener() {
+        frame.addMouseListener(new MouseInputListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                x = Core.normalX(e.getX() - stepX, cell);
-                y = Core.normalY(e.getY() - stepY, cell);
-                Core.arrUserNumber[y][x] = Core.arrSetNext(Core.arrUserNumber[y][x]);
-                arrXY = Core.generateXY(x, y, arrXY, cell, stepCell);
-                windows.render();
-                if (Core.winSudoku()) {
-                    windows.alert("Вы выиграли!", "Поздравляю!!!");
-                    buttonUpdate();
+                if (Core.startGame) {
+                    x = Core.normalX(e.getX() - stepX, cell);
+                    y = Core.normalY(e.getY() - stepY, cell);
+                    Core.arrUserNumber[y][x] = Core.arrSetNext(Core.arrUserNumber[y][x]);
+                    arrXY = Core.generateXY(x, y, arrXY, cell, stepCell);
                 }
+                renderJPanel();
             }
 
             @Override
@@ -98,14 +105,30 @@ public class Controller {
             public void mouseExited(MouseEvent e) {
 
             }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+            }
         });
 
+
+    }
+
+    private void renderJPanel(){
+        if (Core.startGame) {
+            windows.renderJPanel();
+        }
     }
 
     private void buttonUpdate() {
         Core.startGame = false;
         Core.startGame();
-        windows.render();
+        windows.renderJPanel();
     }
 
 }

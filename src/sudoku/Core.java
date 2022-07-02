@@ -1,11 +1,13 @@
 package sudoku;
 
+import java.awt.*;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Core {
 
-
+    public static int WIDTH = 594;
+    public static  int HEIGHT = 651;
     public static boolean startGame = false;
     private static final int arrLength = 9;
     public static int level = 1;
@@ -275,4 +277,8 @@ public class Core {
         }
         System.out.println();
     }
+    public static Color randomColor (){
+        return new Color(randomMinMax(0,255),randomMinMax(0,255),randomMinMax(0,255),randomMinMax(0,255));
+    }
+
 }

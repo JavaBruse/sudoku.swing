@@ -1,6 +1,15 @@
 <component name="ArtifactManager">
   <artifact type="jpackage" name="sudoku.swing">
     <output-path>$PROJECT_DIR$/out/artifacts/sudoku_swing</output-path>
+    <properties id="jpackage-properties">
+      <options>
+        <option name="version" value="1.0" />
+        <option name="copyright" value="" />
+        <option name="description" value="" />
+        <option name="vendor" value="" />
+        <option name="mainClass" value="sudoku.Main" />
+      </options>
+    </properties>
     <root id="root">
       <element id="archive" name="sudoku_swing.jar">
         <element id="module-output" name="sudoku.swing" />

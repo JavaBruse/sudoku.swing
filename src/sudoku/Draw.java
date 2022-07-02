@@ -10,18 +10,16 @@ public class Draw extends JPanel {
     private boolean fillCell = false;
     private final int stepCell = cell / 6;
     private int[] arrXY = new int[10];
+    public static Color color = new Color(122,125,185);
 
     public Draw( ) {
-
     }
-
 
     protected void paintComponent(Graphics g) {
         fillCell = Controller.fillCell;
         if (fillCell == true) {
             setFillCell(g);
         }
-        //this.remove(this);
         setLineCell(g, Color.BLACK);
         setAllNumber(g, Core.sudokuArr);
         Core.synchrArr(Core.arrUserNumber, Core.sudokuArr);
@@ -55,7 +53,7 @@ public class Draw extends JPanel {
 
     public void paneFillCell(Graphics g, int horiz, int vert, int hight, int width) {
         Graphics2D g2 = (Graphics2D) g;
-        g2.setPaint(Color.MAGENTA);
+        g2.setPaint(color);
         Rectangle2D r2D = new Rectangle2D.Float(horiz, vert, hight, width);
         g2.fill(r2D);
     }

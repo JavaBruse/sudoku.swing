@@ -1,13 +1,22 @@
 package sudoku;
 
 import javax.swing.*;
+import javax.swing.event.MouseInputAdapter;
+import javax.swing.event.MouseInputListener;
 import java.awt.*;
-import java.util.Arrays;
+import java.awt.event.*;
 
 
 public class Windows extends JFrame {
 
-    private JPanel panel, panelMap;
+    private int WIDTH = 591;
+    private int HEIGHT = 651;
+
+    private final int paneLights = 594;
+    private final int cell = paneLights / 9;
+
+
+    private JPanel panelMenu, panelMap, panelAlert;
     private JComboBox comboBox;
     private JRadioButton radioButton;
     private JButton button;
@@ -20,22 +29,6 @@ public class Windows extends JFrame {
             " - А ЛЕГКО это сложность!"};
     private String[] alertWinner = new String[]{"Победа", "Поздравляю, Вы победили!"};
 
-    public JButton getButton() {
-        return button;
-    }
-
-    public JButton getButtonColor() {
-        return buttonColor;
-    }
-
-    public JComboBox getComboBox() {
-        return comboBox;
-    }
-
-    public JRadioButton getRadioButton() {
-        return radioButton;
-    }
-
     public JFrame getFrame() {
         return this;
     }
@@ -46,43 +39,60 @@ public class Windows extends JFrame {
     }
 
     public void renderJPanel() {
-        if (Core.winSudoku()) {
-            Core.startGame = false;
-            this.add(alertWinner(), BorderLayout.CENTER);
-        } else {
-            this.add(map(), BorderLayout.CENTER);
+        if (Core.startGame) {
+            removeContent();
+            if (Core.winSudoku()) {
+                Core.startGame = false;
+                initAlert(alertWinner);
+                panelAlert.setName("panelAlert");
+                this.add(panelAlert, BorderLayout.CENTER);
+            } else {
+                initMap();
+                panelMap.setName("panelMap");
+                this.add(panelMap, BorderLayout.CENTER);
+            }
         }
         this.validate();
     }
 
-    private void addComponent() {
-        panel.add(button);
-        panel.add(radioButton);
-        panel.add(buttonColor);
-        panel.add(comboBox);
-        this.add(panel, "North");
-        JLabel jLabel = new JLabel();
-        for (String s : alertNewGame) {
-            jLabel.setText(s);
+    private void removeContent() {
+        for (Component s : this.getContentPane().getComponents()) {
+            if (s.getName().equals("panelMap")) {
+                this.getContentPane().remove(panelMap);
+            }
+            if (s.getName().equals("panelAlert")) {
+                this.getContentPane().remove(panelAlert);
+            }
         }
-        this.add(new Alert(alertNewGame), BorderLayout.CENTER);
+
+    }
+
+    private void addComponent() {
+        panelMenu.add(button);
+        panelMenu.add(radioButton);
+        panelMenu.add(buttonColor);
+        panelMenu.add(comboBox);
+        initAlert(alertNewGame);
+        panelMenu.setName("panelMenu");
+        panelAlert.setName("panelAlert");
+        this.add(panelMenu, BorderLayout.NORTH);
+        this.add(panelAlert, BorderLayout.CENTER);
     }
 
     private void initComponent() {
         initFrame();
-        initPanel();
+        initPanelMenu();
         initComboBox();
         initRadioButton();
         initButton();
+        listeners();
     }
 
     private void initFrame() {
         this.setTitle("SUDOKU");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setPreferredSize(new Dimension(Core.WIDTH, Core.HEIGHT));
-        this.pack();
-        centeringFrame(Core.WIDTH, Core.HEIGHT, this);
-        this.setResizable(false);
+        centeringComponent(WIDTH, HEIGHT, null, this);
+        this.setResizable(true);
     }
 
     private void initComboBox() {
@@ -103,26 +113,99 @@ public class Windows extends JFrame {
         buttonColor.setBounds(5, 5, 100, 20);
     }
 
-    private void initPanel() {
-        panel = new JPanel(new GridLayout(1, 4));
+    private void initPanelMenu() {
+        panelMenu = new JPanel(new GridLayout(1, 4));
+        //panelMenu.setBorder(BorderFactory.createBevelBorder(0));
     }
 
-    private JPanel map() {
-        panelMap = new Draw();
-        return panelMap;
+    private void initMap() {
+        panelMap = new MapGame(this.HEIGHT - 57, this.WIDTH);
+        addMouseListener();
     }
 
-    private JPanel alertWinner() {
-        panelMap = new Alert(alertWinner);
-        return panelMap;
+    private void initAlert(String[] s) {
+        panelAlert = new Alert(s, HEIGHT, WIDTH);
     }
 
-    private void centeringFrame(int sizeWidth, int sizeHeight, JFrame frame) {
+    private void centeringComponent(int sizeWidth, int sizeHeight, JComponent component, JFrame frame) {
         Dimension s = Toolkit.getDefaultToolkit().getScreenSize();
         int X = (s.width - sizeWidth) / 2;
         int Y = (s.height - sizeHeight) / 2;
-        frame.setBounds(X, Y, sizeWidth, sizeHeight);
+        if (frame == null) {
+            component.setBounds(X, Y, sizeWidth, sizeHeight);
+        } else {
+            frame.setBounds(X, Y, sizeWidth, sizeHeight);
+        }
     }
+
+    private void listeners() {
+        buttonColor.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MapGame.color = Core.randomColor();
+                renderJPanel();
+            }
+        });
+
+        button.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Core.winner = false;
+                buttonUpdate();
+            }
+        });
+        radioButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (radioButton.isSelected()) {
+                    Core.fillCell = true;
+                } else {
+                    Core.fillCell = false;
+                }
+                renderJPanel();
+
+            }
+        });
+        comboBox.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Core.level = comboBox.getSelectedIndex() + 1;
+            }
+        });
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                HEIGHT = e.getComponent().getHeight();
+                WIDTH = e.getComponent().getWidth();
+                renderJPanel();
+                super.componentResized(e);
+            }
+        });
+
+    }
+    private void addMouseListener (){
+        panelMap.addMouseListener(new MouseInputAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (Core.startGame) {
+                    int x = (e.getX() - Core.leftX) / (Core.resizable / 9);
+                    int y = (e.getY() - Core.upY) / (Core.resizable / 9);
+                    System.out.println("x = " + x + "y = " + y);
+                    Core.arrUserNumber[y][x] = Core.arrSetNext(Core.arrUserNumber[y][x]);
+                }
+                renderJPanel();
+                Core.printArr(Core.sudokuArr);
+            }
+        });
+    }
+
+    private void buttonUpdate() {
+        Core.startGame = false;
+        Core.startGame();
+        renderJPanel();
+    }
+
+
 }
 
 

@@ -6,8 +6,12 @@ import java.util.Set;
 
 public class Core {
 
-    public static int WIDTH = 594;
-    public static  int HEIGHT = 651;
+    public static boolean fillCell = false;
+    public static boolean winner = false;
+
+    public static int stepX, stepY;
+
+    public static int leftX, upY, resizable;
     public static boolean startGame = false;
     private static final int arrLength = 9;
     public static int level = 1;
@@ -37,7 +41,7 @@ public class Core {
     }
 
     public static int levelHide() {
-        return (70 / 5) * level;
+        return 1;//(70 / 5) * level;
     }
 
     private static void hideNumber(int hideNumber) {
@@ -253,15 +257,6 @@ public class Core {
         return x;
     }
 
-    public static int[] generateXY(int y, int x, int arrXY[], int cell, int stepCell) {
-        arrXY[0] = (cell * x) + (cell / 2) - stepCell;
-        arrXY[1] = (cell * x) + (cell / 2) + stepCell;
-        arrXY[2] = (cell * y) + stepCell;
-        arrXY[3] = (cell * y) + (cell / 2);
-        arrXY[4] = (cell * y) + cell - stepCell;
-        return arrXY;
-    }
-
     public static int randomMinMax(int min, int max) {
         max -= min;
         return (int) (Math.random() * ++max) + min;
@@ -277,8 +272,9 @@ public class Core {
         }
         System.out.println();
     }
-    public static Color randomColor (){
-        return new Color(randomMinMax(0,255),randomMinMax(0,255),randomMinMax(0,255),randomMinMax(0,255));
+
+    public static Color randomColor() {
+        return new Color(randomMinMax(0, 255), randomMinMax(0, 255), randomMinMax(0, 255), randomMinMax(0, 255));
     }
 
 }

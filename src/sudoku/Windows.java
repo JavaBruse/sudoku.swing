@@ -2,7 +2,6 @@ package sudoku;
 
 import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
-import javax.swing.event.MouseInputListener;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -11,10 +10,6 @@ public class Windows extends JFrame {
 
     private int WIDTH = 591;
     private int HEIGHT = 651;
-
-    private final int paneLights = 594;
-    private final int cell = paneLights / 9;
-
 
     private JPanel panelMenu, panelMap, panelAlert;
     private JComboBox comboBox;
@@ -194,7 +189,6 @@ public class Windows extends JFrame {
                     Core.arrUserNumber[y][x] = Core.arrSetNext(Core.arrUserNumber[y][x]);
                 }
                 renderJPanel();
-                Core.printArr(Core.sudokuArr);
             }
         });
     }

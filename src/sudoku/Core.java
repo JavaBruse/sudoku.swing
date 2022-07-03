@@ -41,7 +41,7 @@ public class Core {
     }
 
     public static int levelHide() {
-        return 1;//(70 / 5) * level;
+        return (70 / 5) * level;
     }
 
     private static void hideNumber(int hideNumber) {
@@ -231,13 +231,6 @@ public class Core {
         return arr;
     }
 
-    public static int normalX(int x, int cell) {
-        return (x / cell);
-    }
-
-    public static int normalY(int y, int cell) {
-        return (y / cell);
-    }
 
     public static int[][] setArrZero(int arrUserNumber[][]) {
         for (int i = 0; i < arrUserNumber.length; i++) {

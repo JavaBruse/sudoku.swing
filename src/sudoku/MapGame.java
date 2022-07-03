@@ -53,6 +53,7 @@ public class MapGame extends JPanel {
         Core.synchrArr(Core.arrUserNumber, Core.sudokuArr);
         setAllNumber(g, Core.arrUserNumber);
         setBorderLine(g, Color.BLACK);
+        setBorderCub(g,Color.BLACK);
     }
 
     private void setBorderLine(Graphics g, Color color) {
@@ -61,6 +62,19 @@ public class MapGame extends JPanel {
         BasicStroke bs = new BasicStroke(12);
         g2.setStroke(bs);
         g.drawRect(leftX, upY, resizable, resizable);
+    }
+
+    private void setBorderCub(Graphics g, Color color){
+        g.setColor(color);
+        Graphics2D g2 = (Graphics2D) g;
+        BasicStroke bs = new BasicStroke(5);
+        g2.setStroke(bs);
+        for (int i = leftX; i < rightX; i += resizable / 3) {
+            g.drawLine(i, upY, i, downY);
+        }
+        for (int i = upY; i < downY; i += resizable / 3) {
+            g.drawLine(leftX, i, rightX, i);
+        }
     }
 
     private void setLineCell(Graphics g, Color color) {
@@ -107,12 +121,10 @@ public class MapGame extends JPanel {
                     double x = (double) leftX + (((double) resizable / 9) * j) + stepCell;
                     double y = (double) upY + (((double) resizable / 9) * i) - stepCell + (resizable / 9);
                     g.drawString(String.valueOf(arr[i][j]), (int) x, (int) y);
-
                 }
             }
         }
         Core.stepX = (int) stepCell;
         Core.stepY = (int) stepCell + (resizable / 9);
     }
-
 }

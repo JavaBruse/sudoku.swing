@@ -5,14 +5,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Core {
-
+    public static Runnable runnable;
     public static boolean fillCell = false;
     public static boolean winner = false;
-
     public static int stepX, stepY;
-
-    public static int leftX, upY, resizable;
+    public static double leftX, upY, resizable, borderLine;
     public static boolean startGame = false;
+    public static boolean winGame = false;
     private static final int arrLength = 9;
     public static int level = 1;
     public static int[][] winnerArr = new int[arrLength][arrLength];
@@ -40,8 +39,7 @@ public class Core {
         }
     }
 
-    public static int levelHide() {
-        return (70 / 5) * level;
+    public static int levelHide() { return (70 / 5) * level;
     }
 
     private static void hideNumber(int hideNumber) {

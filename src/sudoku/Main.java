@@ -6,10 +6,14 @@ public class Main {
     public static void main(String[] args) {
         Controller games = new Controller();
         JFrame.setDefaultLookAndFeelDecorated(true);
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+        Core.runnable = new Runnable() {
+            @Override
             public void run() {
                 games.start();
             }
-        });
+        };
+        javax.swing.SwingUtilities.invokeLater(Core.runnable);
+
+
     }
 }

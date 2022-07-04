@@ -4,18 +4,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
-public class MapGame extends JPanel {
+public class winnerDance extends JPanel {
+
     private final double HEIGHT, WIDTH;
     private double leftX, upY, rightX, downY, resizable, borderLine;
     private boolean fillCell = false;
     public static Color color = new Color(122, 125, 185);
-    private int condition; //1-игра, 2-ожидание игры, 3-победа
 
-
-    public MapGame(int HEIGHT, int WIDTH, int condition) {
+    public winnerDance(int HEIGHT, int WIDTH) {
         this.HEIGHT = HEIGHT;
         this.WIDTH = WIDTH;
-        this.condition = condition;
         if (HEIGHT > WIDTH) {
             resizable = WIDTH;
         } else {
@@ -132,4 +130,8 @@ public class MapGame extends JPanel {
         Core.stepX = (int) stepCell;
         Core.stepY = (int) ((int) stepCell + (resizable / 9));
     }
+
+
+
+
 }

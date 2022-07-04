@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Arrays;
 
 
 public class Windows extends JFrame {
@@ -31,26 +32,33 @@ public class Windows extends JFrame {
     public Windows() {
         initComponent();
         addComponent();
+        renderNewGame();
     }
 
-    public void renderJPanel() {
-        if (Core.startGame) {
-            removeContent();
-            if (Core.winSudoku()) {
-                Core.startGame = false;
-                initAlert(alertWinner);
-                panelAlert.setName("panelAlert");
-                this.add(panelAlert, BorderLayout.CENTER);
-            } else {
-                initMap();
-                panelMap.setName("panelMap");
-                this.add(panelMap, BorderLayout.CENTER);
-            }
+    private void renderJPanel() {
+        removeContent();
+        if (Core.winSudoku()) {
+            Core.startGame = false;
+            Core.winGame = true;
+            initAlert(alertWinner);
+            this.add(panelAlert, BorderLayout.CENTER);
+        } else {
+            initMap(1);
+            this.add(panelMap, BorderLayout.CENTER);
         }
         this.validate();
     }
 
+    private void renderNewGame() {
+        removeContent();
+        initAlert(alertNewGame);
+        this.add(panelAlert, BorderLayout.CENTER);
+        this.validate();
+    }
+
+
     private void removeContent() {
+        int x = 1;
         for (Component s : this.getContentPane().getComponents()) {
             if (s.getName().equals("panelMap")) {
                 this.getContentPane().remove(panelMap);
@@ -59,7 +67,6 @@ public class Windows extends JFrame {
                 this.getContentPane().remove(panelAlert);
             }
         }
-
     }
 
     private void addComponent() {
@@ -67,11 +74,7 @@ public class Windows extends JFrame {
         panelMenu.add(radioButton);
         panelMenu.add(buttonColor);
         panelMenu.add(comboBox);
-        initAlert(alertNewGame);
-        panelMenu.setName("panelMenu");
-        panelAlert.setName("panelAlert");
         this.add(panelMenu, BorderLayout.NORTH);
-        this.add(panelAlert, BorderLayout.CENTER);
     }
 
     private void initComponent() {
@@ -81,12 +84,14 @@ public class Windows extends JFrame {
         initRadioButton();
         initButton();
         listeners();
+        initMap(2);
     }
 
     private void initFrame() {
         this.setTitle("SUDOKU");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         centeringComponent(WIDTH, HEIGHT, null, this);
+        this.setMinimumSize(new Dimension(50, 50));
         this.setResizable(true);
     }
 
@@ -110,16 +115,19 @@ public class Windows extends JFrame {
 
     private void initPanelMenu() {
         panelMenu = new JPanel(new GridLayout(1, 4));
+        panelMenu.setName("panelMenu");
         //panelMenu.setBorder(BorderFactory.createBevelBorder(0));
     }
 
-    private void initMap() {
-        panelMap = new MapGame(this.HEIGHT - 57, this.WIDTH);
+    private void initMap(int condition) {
+        panelMap = new MapGame(this.HEIGHT - 57, this.WIDTH, condition);
+        panelMap.setName("panelMap");
         addMouseListener();
     }
 
     private void initAlert(String[] s) {
-        panelAlert = new Alert(s, HEIGHT, WIDTH);
+        panelAlert = new Alert(s, this.HEIGHT - 57, this.WIDTH);
+        panelAlert.setName("panelAlert");
     }
 
     private void centeringComponent(int sizeWidth, int sizeHeight, JComponent component, JFrame frame) {
@@ -141,7 +149,6 @@ public class Windows extends JFrame {
                 renderJPanel();
             }
         });
-
         button.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -158,7 +165,6 @@ public class Windows extends JFrame {
                     Core.fillCell = false;
                 }
                 renderJPanel();
-
             }
         });
         comboBox.addActionListener(new AbstractAction() {
@@ -172,20 +178,23 @@ public class Windows extends JFrame {
             public void componentResized(ComponentEvent e) {
                 HEIGHT = e.getComponent().getHeight();
                 WIDTH = e.getComponent().getWidth();
-                renderJPanel();
+                if (Core.startGame || Core.winGame) {
+                    renderJPanel();
+                } else {
+                    renderNewGame();
+                }
                 super.componentResized(e);
             }
         });
-
     }
-    private void addMouseListener (){
+
+    private void addMouseListener() {
         panelMap.addMouseListener(new MouseInputAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (Core.startGame) {
-                    int x = (e.getX() - Core.leftX) / (Core.resizable / 9);
-                    int y = (e.getY() - Core.upY) / (Core.resizable / 9);
-                    System.out.println("x = " + x + "y = " + y);
+                    int x = (int) ((e.getX() - Core.leftX) / (Core.resizable / 9));
+                    int y = (int) ((e.getY() - Core.upY) / (Core.resizable / 9));
                     Core.arrUserNumber[y][x] = Core.arrSetNext(Core.arrUserNumber[y][x]);
                 }
                 renderJPanel();
@@ -198,7 +207,6 @@ public class Windows extends JFrame {
         Core.startGame();
         renderJPanel();
     }
-
 
 }
 

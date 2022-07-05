@@ -41,7 +41,7 @@ public class Core {
     }
 
     public static int levelHide() {
-        return 1;//(70 / 5) * level;
+        return (70 / 5) * level;
     }
 
     private static void hideNumber(int hideNumber) {

@@ -4,10 +4,12 @@ import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.Time;
 
 public class Windows extends JFrame {
     private int WIDTH = 591;
     private int HEIGHT = 651;
+    private int i = 0, j = 0;
     private boolean activatePanelMap = true;
     private final String courses[] = {"Легко", "Нормально", "Тяжело", "Очень тяжело"};
     private final JPanel menu = new JPanel(new GridLayout(1, 4));
@@ -16,6 +18,20 @@ public class Windows extends JFrame {
     private final JRadioButton radioButton = new JRadioButton("Подсветка");
     private final JButton button = new JButton("Старт");
     private final JButton buttonColor = new JButton("Цвет");
+    ActionListener oneActionListener = evt -> jPanel.repaint();
+//    ActionListener twoActionListener = evt -> {
+//        Core.startGame();
+//        //Core.startGame = false;
+//        if (Core.sudokuArr[i][j] != 0) {
+//            Core.sudokuArr[i][j]--;
+//            jPanel.repaint();
+//
+//        }
+//    };
+
+    Timer one = new Timer(200, oneActionListener);
+//    Timer two = new Timer(500, twoActionListener);
+
 
     public JFrame getFrame() {
         return this;
@@ -33,9 +49,8 @@ public class Windows extends JFrame {
         Core.HEIGHT = HEIGHT;
         Core.WIDTH = WIDTH;
         Core.condition = 3;
+        one.start();
     }
-
-    ActionListener taskPerformer = evt -> jPanel.repaint();
 
     private void renderJPanel() {
         if (Core.winSudoku()) {
@@ -43,8 +58,9 @@ public class Windows extends JFrame {
             Core.winGame = true;
             activatePanelMap = false;
             Core.condition = 3;
-            new Timer(50, taskPerformer).start();
-        } else {
+            one.start();
+        } else if (Core.startGame) {
+            one.stop();
             jPanel.repaint();
         }
         this.validate();

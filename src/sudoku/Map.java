@@ -9,7 +9,6 @@ public class Map extends JPanel {
     private double leftX, upY, rightX, downY, resizable, borderLine;
     private boolean fillCell = false;
     public static Color color = new Color(122, 125, 185);
-    private int condition = 1; //1-игра, 2-ожидание игры, 3-победа
 
     public Map() {
     }
@@ -48,9 +47,8 @@ public class Map extends JPanel {
         HEIGHT = Core.HEIGHT - 57;
         WIDTH = Core.WIDTH;
         dot();
-        condition = Core.condition;
         switch (Core.condition) {
-            case 1:
+            case 1: // 1-игра.
                 fillCell = Core.fillCell;
                 if (fillCell == true) {
                     setFillCell(g);
@@ -59,15 +57,19 @@ public class Map extends JPanel {
                 Core.synchrArr(Core.arrUserNumber, Core.sudokuArr);
                 setAllNumber(g, Core.arrUserNumber, Color.magenta);
                 break;
-            case 2:
+            case 2: // 2-ожидание игры.
+               // setAllNumber(g, Core.sudokuArr, Color.BLACK);
 
                 break;
-            case 3:
+            case 3: // 3-победа.
                 randomColorCell(g);
         }
         border(g);
 
     }
+
+
+
 
     private void border(Graphics g){
         setBorderLine(g, Color.BLACK);

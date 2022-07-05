@@ -4,27 +4,22 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
-public class MapGame extends JPanel {
-    private final double HEIGHT, WIDTH;
+public class Map extends JPanel {
+    private double HEIGHT, WIDTH;
     private double leftX, upY, rightX, downY, resizable, borderLine;
     private boolean fillCell = false;
     public static Color color = new Color(122, 125, 185);
-    private int condition; //1-игра, 2-ожидание игры, 3-победа
+    private int condition = 1; //1-игра, 2-ожидание игры, 3-победа
 
+    public Map() {
+    }
 
-    public MapGame(int HEIGHT, int WIDTH, int condition) {
-        this.HEIGHT = HEIGHT;
-        this.WIDTH = WIDTH;
-        this.condition = condition;
+    private void dot() {
         if (HEIGHT > WIDTH) {
             resizable = WIDTH;
         } else {
             resizable = HEIGHT;
         }
-        dot();
-    }
-
-    private void dot() {
         leftX = WIDTH / 2 - resizable / 2;
         upY = HEIGHT / 2 - resizable / 2;
         if (upY < 0) {
@@ -40,26 +35,55 @@ public class MapGame extends JPanel {
         if (resizable < 10) {
             resizable = 10;
         }
-        borderLine = (resizable/100)/2;
+        borderLine = (resizable / 100) / 2;
         Core.borderLine = borderLine;
         Core.leftX = leftX;
         Core.upY = upY;
         Core.resizable = resizable;
     }
 
-
+    @Override
     protected void paintComponent(Graphics g) {
-        fillCell = Core.fillCell;
-        if (fillCell == true) {
-            setFillCell(g);
+        super.paintComponent(g);
+        HEIGHT = Core.HEIGHT - 57;
+        WIDTH = Core.WIDTH;
+        dot();
+        condition = Core.condition;
+        switch (Core.condition) {
+            case 1:
+                fillCell = Core.fillCell;
+                if (fillCell == true) {
+                    setFillCell(g);
+                }
+                setAllNumber(g, Core.sudokuArr, Color.BLACK);
+                Core.synchrArr(Core.arrUserNumber, Core.sudokuArr);
+                setAllNumber(g, Core.arrUserNumber, Color.magenta);
+                break;
+            case 2:
+
+                break;
+            case 3:
+                randomColorCell(g);
         }
-        setLineCell(g, Color.BLACK);
-        setAllNumber(g, Core.sudokuArr);
-        Core.synchrArr(Core.arrUserNumber, Core.sudokuArr);
-        setAllNumber(g, Core.arrUserNumber);
+        border(g);
+
+    }
+
+    private void border(Graphics g){
         setBorderLine(g, Color.BLACK);
         setBorderCub(g, Color.BLACK);
+        setLineCell(g, Color.BLACK);
     }
+
+
+    private void randomColorCell(Graphics g) {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                paneFillCell(g, (int) (leftX + ((resizable / 9) * i)), (int) (upY + ((resizable / 9) * j)), (int) (resizable / 9), (int) (resizable / 9), Core.randomColor());
+            }
+        }
+    }
+
 
     private void setBorderLine(Graphics g, Color color) {
         g.setColor(color);
@@ -96,35 +120,36 @@ public class MapGame extends JPanel {
         Core.mergerArr(Core.arrUserNumber, Core.sudokuArr);
         for (int i = 0; i < 9; i++) {
             if (Core.winerH(i, Core.winnerArr)) {
-                paneFillCell(g, (int) leftX, (int) (upY + ((resizable / 9) * i)), (int) resizable, (int) (resizable / 9));
+                paneFillCell(g, (int) leftX, (int) (upY + ((resizable / 9) * i)), (int) resizable, (int) (resizable / 9), color);
             }
             if (Core.winerV(i, Core.winnerArr)) {
-                paneFillCell(g, (int) (leftX + ((resizable / 9) * i)), (int) upY, (int) (resizable / 9), (int) resizable);
+                paneFillCell(g, (int) (leftX + ((resizable / 9) * i)), (int) upY, (int) (resizable / 9), (int) resizable, color);
             }
             if (Core.winerRactzngle(i, Core.winnerArr)) {
                 int arr[] = Core.gpsRactangle(i);
-                paneFillCell(g, (int) (leftX + ((resizable / 9) * arr[1])), (int) (upY + ((resizable / 9) * arr[0])), (int) (resizable / 3), (int) (resizable / 3));
+                paneFillCell(g, (int) (leftX + ((resizable / 9) * arr[1])), (int) (upY + ((resizable / 9) * arr[0])), (int) (resizable / 3), (int) (resizable / 3), color);
             }
         }
     }
 
-    public void paneFillCell(Graphics g, int horiz, int vert, int hight, int width) {
+    public void paneFillCell(Graphics g, int horiz, int vert, int hight, int width, Color color) {
         Graphics2D g2 = (Graphics2D) g;
         g2.setPaint(color);
         Rectangle2D r2D = new Rectangle2D.Float(horiz, vert, hight, width);
         g2.fill(r2D);
     }
 
-    private void setAllNumber(Graphics g, int arr[][]) {
+    private void setAllNumber(Graphics g, int arr[][], Color color) {
         Font newFont = new Font("Courier New", 1, (int) (resizable / 9));
         g.setFont(newFont);
+        g.setColor(color);
         double stepCell = 0;
         for (int i = 0; i < arr.length; i++) {
             for (int j = 0; j < arr.length; j++) {
                 if (arr[i][j] != 0) {
-                    stepCell = (((double) resizable / 9) / 100) * 18;
-                    double x = (double) leftX + (((double) resizable / 9) * j) + stepCell;
-                    double y = (double) upY + (((double) resizable / 9) * i) - stepCell + (resizable / 9);
+                    stepCell = ((resizable / 9) / 100) * 18;
+                    double x = leftX + ((resizable / 9) * j) + stepCell;
+                    double y = upY + ((resizable / 9) * i) - stepCell + (resizable / 9);
                     g.drawString(String.valueOf(arr[i][j]), (int) x, (int) y);
                 }
             }
@@ -132,4 +157,5 @@ public class MapGame extends JPanel {
         Core.stepX = (int) stepCell;
         Core.stepY = (int) ((int) stepCell + (resizable / 9));
     }
+
 }

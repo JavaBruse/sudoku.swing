@@ -1,15 +1,16 @@
 package sudoku;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Core {
-    public static Runnable runnable;
+    public static Color inversionColor;
     public static boolean fillCell = false;
     public static boolean winner = false;
-    public static int stepX, stepY;
-    public static double leftX, upY, resizable, borderLine;
+    public static int stepX, stepY, condition;
+    public static double leftX, upY, resizable, borderLine, HEIGHT, WIDTH;
     public static boolean startGame = false;
     public static boolean winGame = false;
     private static final int arrLength = 9;
@@ -39,7 +40,8 @@ public class Core {
         }
     }
 
-    public static int levelHide() { return (70 / 5) * level;
+    public static int levelHide() {
+        return 1;//(70 / 5) * level;
     }
 
     private static void hideNumber(int hideNumber) {
@@ -265,7 +267,33 @@ public class Core {
     }
 
     public static Color randomColor() {
-        return new Color(randomMinMax(0, 255), randomMinMax(0, 255), randomMinMax(0, 255), randomMinMax(0, 255));
+        int x = randomMinMax(0, 255);
+        int y = randomMinMax(0, 255);
+        int z = randomMinMax(0, 255);
+        int w = randomMinMax(0, 255);
+        inversionColor(new int[]{x, y, z, w});
+        return new Color(x, y, z, w);
     }
 
+
+    public static void inversionColor(int arr[]) {
+        inversionColor = new Color(adden(arr[0]), adden(arr[1]), adden(arr[2]), adden(arr[3]));
+    }
+
+    public static int adden(int x) {
+        x = x + (255 / 2);
+        return (x > 255 ? x - 255 : x);
+    }
+
+
+    public static void centeringJFrame(int sizeWidth, int sizeHeight, JComponent component, JFrame frame) {
+        Dimension s = Toolkit.getDefaultToolkit().getScreenSize();
+        int X = (s.width - sizeWidth) / 2;
+        int Y = (s.height - sizeHeight) / 2;
+        if (frame == null) {
+            component.setBounds(X, Y, sizeWidth, sizeHeight);
+        } else {
+            frame.setBounds(X, Y, sizeWidth, sizeHeight);
+        }
+    }
 }

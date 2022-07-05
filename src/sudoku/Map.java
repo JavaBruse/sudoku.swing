@@ -72,9 +72,9 @@ public class Map extends JPanel {
 
 
     private void border(Graphics g){
+        setLineCell(g, Color.BLACK);
         setBorderLine(g, Color.BLACK);
         setBorderCub(g, Color.BLACK);
-        setLineCell(g, Color.BLACK);
     }
 
 
@@ -90,7 +90,7 @@ public class Map extends JPanel {
     private void setBorderLine(Graphics g, Color color) {
         g.setColor(color);
         Graphics2D g2 = (Graphics2D) g;
-        BasicStroke bs = new BasicStroke((float) (borderLine));
+        BasicStroke bs = new BasicStroke((float) (10));
         g2.setStroke(bs);
         g.drawRect((int) leftX, (int) upY, (int) resizable, (int) resizable);
     }

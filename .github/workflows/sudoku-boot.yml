@@ -1,50 +1,55 @@
-name: Java CI/CD Pipeline # Имя
+name: Java CI/CD Pipeline
 
-on: # Определяет события, которые запускают workflow
-  push: # Запускать workflow при пуше в указанные ветки
+on:
+  push:
     branches:
-      - master # Указываем ветку
-  pull_request: # Запускать workflow при создании или обновлении pull request
+      - master
+  pull_request:
     branches:
-      - master # Указываем ветку
+      - master
 
-jobs: # Определение джобов (наборов задач) для выполнения
-  build-and-test: # Имя джоба
-    name: Build and Test on Multiple OS # Человеко-читаемое имя джоба
-    runs-on: ${{ matrix.os }} # Используемая операционная система, выбирается из матрицы
+jobs:
+  build-and-test:
+    runs-on: ${{ matrix.os }}
     strategy:
-      matrix: # Определение матрицы параметров для параллельного выполнения
-        os: [ubuntu-latest, windows-latest, macos-latest, macos-arm64] # Список операционных систем и архитектур (Linux, Windows, MacOS (Intel, Apple Silicon))
-        packageType:
-          windows: exe
-          macos: dmg
-          linux: deb
-    steps: # Последовательные шаги для выполнения джоба
-      - name: Checkout code # Шаг: Клонирование репозитория
-        uses: actions/checkout@v3 # Используем готовое действие для клонирования кода из репозитория
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest, macos-arm64]
+        include:
+          - os: ubuntu-latest
+            packageType: tar.gz
+          - os: windows-latest
+            packageType: exe
+          - os: macos-latest
+            packageType: dmg
+          - os: macos-arm64
+            packageType: dmg
 
-      - name: Set up JDK # Шаг: Установка Java Development Kit (JDK)
-        uses: actions/setup-java@v3 # Используем готовое действие для установки JDK
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
         with:
-          distribution: 'temurin' # Указываем дистрибутив OpenJDK (Temurin)
-          java-version: 17 # Устанавливаем фиксированную версию Java 17
+          distribution: 'temurin'
+          java-version: 17
 
-      - name: Build and Test # Шаг: Сборка проекта и запуск тестов
-        run: mvn clean package -Djpackage.type=${{ matrix.packageType }} # Команда Maven для очистки, сборки и запуска тестов
-      - name: Create OS directory # Создать папку для артефактов
+      - name: Build and Test
+        run: mvn clean package -Djpackage.type=${{ matrix.packageType }}
+
+      - name: Create OS directory
         run: mkdir -p OS
-      - name: Move built files to artifacts # Переместить собранные файлы
-        run: |
-          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            mv target/*.exe OS/
-          elif [[ "${{ matrix.os }}" == "macos-latest" || "${{ matrix.os }}" == "macos-arm64" ]]; then
-            mv target/*.dmg OS/
-          else
-            mv target/*.tar.gz OS/
-          fi
 
-      - name: Commit and push artifacts # Закоммитить и отправить артефакты в репозиторий
-        if: github.ref == 'refs/heads/master' # Только для ветки master
+      - name: Move built files to artifacts
+        run: |
+          case "${{ matrix.os }}" in
+            windows-latest) mv target/*.exe OS/ ;;
+            macos-latest | macos-arm64) mv target/*.dmg OS/ ;;
+            *) mv target/*.tar.gz OS/ ;;
+          esac
+
+      - name: Commit and push artifacts
+        if: github.ref == 'refs/heads/master'
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"

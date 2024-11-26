@@ -51,7 +51,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Плагин jpackage -->
+            <!-- Плагин jpackage для создания пакетов -->
             <plugin>
                 <groupId>org.panteleyev</groupId>
                 <artifactId>jpackage-maven-plugin</artifactId>
@@ -65,13 +65,38 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <type>${jpackage.type}</type> <!-- Тип файла для текущей ОС -->
+                    <!-- Параметры для каждого типа пакета -->
+                    <type>${jpackage.type}</type> <!-- Тип пакета (exe, dmg, tar.gz и т.д.) -->
                     <name>sudoku</name> <!-- Название программы -->
                     <mainJar>${project.build.finalName}.jar</mainJar> <!-- JAR-файл -->
                     <mainClass>org.sudoku.Main</mainClass> <!-- Главный класс -->
-                    <outputDirectory>${project.build.directory}/</outputDirectory> <!-- Куда сохранять пакеты -->
+                    <outputDirectory>${project.build.directory}/installer</outputDirectory> <!-- Куда сохранять пакеты -->
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <!-- Профили для разных операционных систем -->
+        <profile>
+            <id>windows</id>
+            <properties>
+                <jpackage.type>exe</jpackage.type> <!-- Тип пакета для Windows -->
+            </properties>
+        </profile>
+
+        <profile>
+            <id>macos</id>
+            <properties>
+                <jpackage.type>dmg</jpackage.type> <!-- Тип пакета для macOS -->
+            </properties>
+        </profile>
+
+        <profile>
+            <id>linux</id>
+            <properties>
+                <jpackage.type>tar.gz</jpackage.type> <!-- Тип пакета для Linux -->
+            </properties>
+        </profile>
+    </profiles>
 </project>

@@ -1,0 +1,50 @@
+name: Java CI/CD Pipeline # Имя
+
+on: # Определяет события, которые запускают workflow
+  push: # Запускать workflow при пуше в указанные ветки
+    branches:
+      - master # Указываем ветку
+  pull_request: # Запускать workflow при создании или обновлении pull request
+    branches:
+      - master # Указываем ветку
+
+jobs: # Определение джобов (наборов задач) для выполнения
+  build-and-test: # Имя джоба
+    name: Build and Test on Multiple OS # Человеко-читаемое имя джоба
+    runs-on: ${{ matrix.os }} # Используемая операционная система, выбирается из матрицы
+    strategy:
+      matrix: # Определение матрицы параметров для параллельного выполнения
+        os: [ubuntu-latest, windows-latest, macos-latest, macos-arm64] # Список операционных систем и архитектур (Linux, Windows, MacOS (Intel, Apple Silicon))
+
+    steps: # Последовательные шаги для выполнения джоба
+      - name: Checkout code # Шаг: Клонирование репозитория
+        uses: actions/checkout@v3 # Используем готовое действие для клонирования кода из репозитория
+
+      - name: Set up JDK # Шаг: Установка Java Development Kit (JDK)
+        uses: actions/setup-java@v3 # Используем готовое действие для установки JDK
+        with:
+          distribution: 'temurin' # Указываем дистрибутив OpenJDK (Temurin)
+          java-version: 17 # Устанавливаем фиксированную версию Java 17
+
+      - name: Build and Test # Шаг: Сборка проекта и запуск тестов
+        run: mvn clean install # Команда Maven для очистки, сборки и запуска тестов
+      - name: Create artifacts directory # Создать папку для артефактов
+        run: mkdir -p artifacts
+      - name: Move built files to artifacts # Переместить собранные файлы
+        run: |
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            mv target/*.exe artifacts/
+          elif [[ "${{ matrix.os }}" == "macos-latest" || "${{ matrix.os }}" == "macos-arm64" ]]; then
+            mv target/*.dmg artifacts/
+          else
+            mv target/*.tar.gz artifacts/
+          fi
+
+      - name: Commit and push artifacts # Закоммитить и отправить артефакты в репозиторий
+        if: github.ref == 'refs/heads/master' # Только для ветки master
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add artifacts/*
+          git commit -m "Add built artifacts for ${{ matrix.os }}"
+          git push origin master

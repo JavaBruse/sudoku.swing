@@ -64,7 +64,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <outfile>${project.build.directory}/installer/sudoku.exe</outfile>
+                    <outfile>${project.build.directory}/sudoku.exe</outfile>
                     <jar>${project.build.directory}/${project.build.finalName}.jar</jar>
                     <mainClass>org.sudoku.Main</mainClass>
                     <headerType>gui</headerType>

@@ -27,17 +27,17 @@ jobs: # Определение джобов (наборов задач) для �
           java-version: 17 # Устанавливаем фиксированную версию Java 17
 
       - name: Build and Test # Шаг: Сборка проекта и запуск тестов
-        run: mvn clean install # Команда Maven для очистки, сборки и запуска тестов
-      - name: Create artifacts directory # Создать папку для артефактов
-        run: mkdir -p artifacts
+        run: mvn clean install -B # Команда Maven для очистки, сборки и запуска тестов
+      - name: Create OS directory # Создать папку для артефактов
+        run: mkdir -p OS
       - name: Move built files to artifacts # Переместить собранные файлы
         run: |
           if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            mv target/*.exe artifacts/
+            mv target/*.exe OS/
           elif [[ "${{ matrix.os }}" == "macos-latest" || "${{ matrix.os }}" == "macos-arm64" ]]; then
-            mv target/*.dmg artifacts/
+            mv target/*.dmg OS/
           else
-            mv target/*.tar.gz artifacts/
+            mv target/*.tar.gz OS/
           fi
 
       - name: Commit and push artifacts # Закоммитить и отправить артефакты в репозиторий
@@ -45,6 +45,6 @@ jobs: # Определение джобов (наборов задач) для �
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add artifacts/*
+          git add OS/*
           git commit -m "Add built artifacts for ${{ matrix.os }}"
           git push origin master

@@ -26,7 +26,7 @@
 
     <build>
         <plugins>
-            <!-- Компиляция с использованием JDK 17 -->
+            <!-- Компиляция -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -36,39 +36,40 @@
                     <target>17</target>
                 </configuration>
             </plugin>
+
+            <!-- Сборка JAR -->
             <plugin>
-                <!-- Build an executable JAR -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.0</version>
                 <configuration>
                     <archive>
                         <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>org.sudoku.Main</mainClass>
+                            <mainClass>org.sudoku.Main</mainClass> <!-- Укажите ваш главный класс -->
                         </manifest>
                     </archive>
                 </configuration>
             </plugin>
-            <!-- Плагин для создания .exe файла с использованием Launch4j -->
+
+            <!-- Плагин jpackage -->
             <plugin>
-                <groupId>com.akathist.maven.plugins.launch4j</groupId>
-                <artifactId>launch4j-maven-plugin</artifactId>
-                <version>2.5.2</version>
+                <groupId>org.panteleyev</groupId>
+                <artifactId>jpackage-maven-plugin</artifactId>
+                <version>1.5.2</version>
                 <executions>
                     <execution>
+                        <id>create-packages</id>
                         <goals>
-                            <goal>launch4j</goal>
+                            <goal>jpackage</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
-                    <outfile>${project.build.directory}/sudoku.exe</outfile>
-                    <jar>${project.build.directory}/${project.build.finalName}.jar</jar>
-                    <mainClass>org.sudoku.Main</mainClass>
-                    <headerType>gui</headerType>
-                    <dontWrapJar>false</dontWrapJar>
+                    <type>${jpackage.type}</type> <!-- Тип файла для текущей ОС -->
+                    <name>sudoku</name> <!-- Название программы -->
+                    <mainJar>${project.build.finalName}.jar</mainJar> <!-- JAR-файл -->
+                    <mainClass>org.sudoku.Main</mainClass> <!-- Главный класс -->
+                    <outputDirectory>${project.build.directory}/</outputDirectory> <!-- Куда сохранять пакеты -->
                 </configuration>
             </plugin>
         </plugins>

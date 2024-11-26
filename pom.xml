@@ -70,7 +70,7 @@
                     <name>sudoku</name> <!-- Название программы -->
                     <mainJar>${project.build.finalName}.jar</mainJar> <!-- JAR-файл -->
                     <mainClass>org.sudoku.Main</mainClass> <!-- Главный класс -->
-                    <outputDirectory>${project.build.directory}/installer</outputDirectory> <!-- Куда сохранять пакеты -->
+                    <outputDirectory>${project.build.directory}/</outputDirectory> <!-- Куда сохранять пакеты -->
                 </configuration>
             </plugin>
         </plugins>

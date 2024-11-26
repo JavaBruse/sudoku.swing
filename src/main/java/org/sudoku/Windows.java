@@ -1,10 +1,9 @@
-package sudoku;
+package org.sudoku;
 
 import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
 import java.awt.*;
 import java.awt.event.*;
-import java.sql.Time;
 
 public class Windows extends JFrame {
     private int WIDTH = 591;

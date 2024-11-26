@@ -1,4 +1,4 @@
-package sudoku;
+package org.sudoku;
 
 public class Controller {
 

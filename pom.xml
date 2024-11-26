@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.sudoku</groupId>
+    <artifactId>sudoku</artifactId>
+    <version>1.0.0</version>
+    <name>sudoku</name>
+    <description>sudoku</description>
+
+    <properties>
+        <java.version>17</java.version>
+    </properties>
+
+    <repositories>
+        <!-- Репозиторий для Launch4j -->
+        <repository>
+            <id>launch4j-repo</id>
+            <url>https://launch4j.sourceforge.io/maven</url>
+        </repository>
+    </repositories>
+
+    <build>
+        <plugins>
+            <!-- Компиляция с использованием JDK 17 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.1</version>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <!-- Build an executable JAR -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>org.sudoku.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <!-- Плагин для создания .exe файла с использованием Launch4j -->
+            <plugin>
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+                <version>2.5.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>launch4j</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <outfile>${project.build.directory}/installer/sudoku.exe</outfile>
+                    <jar>${project.build.directory}/${project.build.finalName}.jar</jar>
+                    <mainClass>org.sudoku.Main</mainClass>
+                    <headerType>gui</headerType>
+                    <dontWrapJar>false</dontWrapJar>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

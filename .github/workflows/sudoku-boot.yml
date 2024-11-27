@@ -28,7 +28,8 @@ jobs:
 
       - name: Build and Test
         run: mvn clean install
-
+      - name: remove OS
+        run: rm -r OS
       - name: Create OS directory
         run: mkdir -p OS
 

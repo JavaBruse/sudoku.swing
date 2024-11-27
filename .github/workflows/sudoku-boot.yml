@@ -34,6 +34,8 @@ jobs:
 
       - name: Move built files to artifacts
         run: mv target/*.exe OS/
+      - name: Move jar files to artifacts
+        run: mv target/*.jar OS/
 
       - name: Commit and push artifacts
         if: github.ref == 'refs/heads/master'

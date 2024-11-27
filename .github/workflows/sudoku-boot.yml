@@ -13,16 +13,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest, macos-arm64]
-        include:
-          - os: ubuntu-latest
-            packageType: tar.gz
-          - os: windows-latest
-            packageType: exe
-          - os: macos-latest
-            packageType: dmg
-          - os: macos-arm64
-            packageType: dmg
+        os: [windows-latest]
+
 
     steps:
       - name: Checkout code
@@ -35,18 +27,13 @@ jobs:
           java-version: 17
 
       - name: Build and Test
-        run: mvn clean package -Djpackage.type=${{ matrix.packageType }}
+        run: mvn clean install
 
       - name: Create OS directory
         run: mkdir -p OS
 
       - name: Move built files to artifacts
-        run: |
-          case "${{ matrix.os }}" in
-            windows-latest) mv target/*.exe OS/ ;;
-            macos-latest | macos-arm64) mv target/*.dmg OS/ ;;
-            *) mv target/*.tar.gz OS/ ;;
-          esac
+        run: mv target/*.exe OS/
 
       - name: Commit and push artifacts
         if: github.ref == 'refs/heads/master'

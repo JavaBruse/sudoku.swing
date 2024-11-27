@@ -3,19 +3,16 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>org.sudoku</groupId>
     <artifactId>sudoku</artifactId>
     <version>1.0.0</version>
     <name>sudoku</name>
     <description>sudoku</description>
-
     <properties>
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
-
     <repositories>
         <!-- Репозиторий для Launch4j -->
         <repository>
@@ -23,10 +20,9 @@
             <url>https://launch4j.sourceforge.io/maven</url>
         </repository>
     </repositories>
-
     <build>
         <plugins>
-            <!-- Компиляция -->
+            <!-- Компиляция с использованием JDK 17 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -36,67 +32,41 @@
                     <target>17</target>
                 </configuration>
             </plugin>
-
-            <!-- Сборка JAR -->
             <plugin>
+                <!-- Build an executable JAR -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.1.0</version>
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.sudoku.Main</mainClass> <!-- Укажите ваш главный класс -->
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>org.sudoku.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
             </plugin>
-
-            <!-- Плагин jpackage для создания пакетов -->
+            <!-- Плагин для создания .exe файла с использованием Launch4j -->
             <plugin>
-                <groupId>org.panteleyev</groupId>
-                <artifactId>jpackage-maven-plugin</artifactId>
-                <version>1.5.2</version>
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+                <version>2.5.2</version>
                 <executions>
                     <execution>
-                        <id>create-packages</id>
                         <goals>
-                            <goal>jpackage</goal>
+                            <goal>launch4j</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
-                    <!-- Параметры для каждого типа пакета -->
-                    <type>${jpackage.type}</type> <!-- Тип пакета (exe, dmg, tar.gz и т.д.) -->
-                    <name>sudoku</name> <!-- Название программы -->
-                    <mainJar>${project.build.finalName}.jar</mainJar> <!-- JAR-файл -->
-                    <mainClass>org.sudoku.Main</mainClass> <!-- Главный класс -->
-                    <outputDirectory>${project.build.directory}/</outputDirectory> <!-- Куда сохранять пакеты -->
+                    <outfile>${project.build.directory}/sudoku.exe</outfile>
+                    <jar>${project.build.directory}/${project.build.finalName}.jar</jar>
+                    <mainClass>org.sudoku.Main</mainClass>
+                    <headerType>gui</headerType>
+                    <dontWrapJar>false</dontWrapJar>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <!-- Профили для разных операционных систем -->
-        <profile>
-            <id>windows</id>
-            <properties>
-                <jpackage.type>exe</jpackage.type> <!-- Тип пакета для Windows -->
-            </properties>
-        </profile>
-
-        <profile>
-            <id>macos</id>
-            <properties>
-                <jpackage.type>dmg</jpackage.type> <!-- Тип пакета для macOS -->
-            </properties>
-        </profile>
-
-        <profile>
-            <id>linux</id>
-            <properties>
-                <jpackage.type>tar.gz</jpackage.type> <!-- Тип пакета для Linux -->
-            </properties>
-        </profile>
-    </profiles>
 </project>
